@@ -1,9 +1,16 @@
 package com.api.parkingcontrol.controllers;
 
+import com.api.parkingcontrol.dtos.ParkingSpotDto;
+import com.api.parkingcontrol.models.ParkingSpotModel;
 import com.api.parkingcontrol.services.ParkingSpotService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -16,5 +23,13 @@ public class ParkingSpotController {
         this.parkingSpotService = parkingSpotService;
     }
 
+    /* o @RequestBody é importante em razão do recebimento de dados via JSON. */
 
+    @PostMapping
+    public ResponseEntity<Object> saveParkingSpot(@RequestBody @Valid ParkingSpotDto parkingSpotDto){
+        var parkingSpotModel = new ParkingSpotModel(); // o var faz inferência de tipo para a varíavel
+        BeanUtils.copyProperties(parkingSpotDto, parkingSpotModel); //Forma de fazer conversão para parkingSpotModel, que será a forma com que inserimos dados no BD
+        parkingSpotModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
+        return ResponseEntity.status(HttpStatus.CREATED).body(parkingSpotService.save(parkingSpotModel));
+    }
 }

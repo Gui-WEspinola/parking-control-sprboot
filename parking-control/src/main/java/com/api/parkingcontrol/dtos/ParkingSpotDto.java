@@ -5,6 +5,12 @@ import javax.validation.constraints.Size;
 
 public class ParkingSpotDto {
 
+
+    /*Essa classe sera a responsável por fazer as validações. Por isso que foi criada a
+    dependência spring-boot-starter-validation
+    Essa são anotações default da string validation, mas podem ser criadas personalizadas
+    essas constraints
+    */
     @NotBlank
     private String parkingSpotNumber;
     @NotBlank
